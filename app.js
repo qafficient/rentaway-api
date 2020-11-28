@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
 const listItem = require('./api/route/listitem');
-const uri = "mongodb+srv://rootdb:cLZVrKDPz9rtRKeh@qafficient.leqm1.mongodb.net/rentaway-db?retryWrites=true&w=majority";
+const uri = "mongodb+srv://@qafficient.leqm1.mongodb.net/rentaway-db?retryWrites=true&w=majority";
 mongoose.connect(uri);
 
 require('dotenv').config()
