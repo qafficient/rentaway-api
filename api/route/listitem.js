@@ -25,8 +25,8 @@ router.get("/", (req, res, next) => {
 });
 
 const s3 = new AWS.S3({
-  accessKeyId: process.env.AWS_ID,
-  secretAccessKey: process.env.AWS_SECRET,
+  accessKeyId: process.env.ID,
+  secretAccessKey: process.env.SECRET,
 });
 
 router.post("/", upload, (req, res, next) => {
@@ -91,7 +91,7 @@ function uploadToS3(imgItem, isCoverImage) {
 
 function buildParam(imgItem, fileType) {
   const params = {
-    Bucket: process.env.AWS_BUCKET_NAME,
+    Bucket: process.env.BUCKET_NAME,
     Key: `${uuidv4()}.${fileType}`,
     Body: imgItem.buffer,
   };
