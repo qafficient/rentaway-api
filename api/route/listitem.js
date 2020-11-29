@@ -13,11 +13,15 @@ const upload = multer({ storage: storage }).array("itemImage");
 
 const Item = require("../model/item");
 const Media = require("../model/media");
+const item = require("../model/item");
 
 router.get("/", (req, res, next) => {
-  res.status(200).json({
-    message: "Getting list item data",
-  });
+
+  Item.find({}).exec().then( (doc) => {
+    console.log(doc);
+    res.status(200).json(doc);
+  })
+  .catch(error => {console.log(error)})
 });
 
 const s3 = new AWS.S3({
@@ -26,18 +30,34 @@ const s3 = new AWS.S3({
 });
 
 router.post("/", upload, (req, res, next) => {
+
+  var promises = [];
+  req.files.forEach(function (imgItem, index, array) {
+      if(index == 0){
+        promises.push(uploadToS3(imgItem, true));
+      }else{
+        promises.push(uploadToS3(imgItem, false));
+      }
+  });
+  Promise.all(promises).then((imageEntries) => {
+     newRentItemEntry(req, res, imageEntries);
+  });   
+});
+
+
+function newRentItemEntry(req, res, imageEntries){
   const item = new Item({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
     price: req.body.price,
     description: req.body.description,
+    images: imageEntries
   });
 
   item
     .save()
     .then((result) => {
-      let itemId = result.id;
-      multipleUploads(req.files, itemId);
+      console.log(result);
       res.status(200).json({
         message: result,
       });
@@ -48,37 +68,6 @@ router.post("/", upload, (req, res, next) => {
         message: "Could not create item",
       });
     });
-});
-
-function addMediaEntry(imageEntries, itemId){
-    const media = new Media({
-        _id: new mongoose.Types.ObjectId(),
-         item_id: itemId,
-        images: imageEntries,
-      });
-      media
-        .save()
-        .then((mediaResult) => {
-          console.log(mediaResult);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-}
-
-function multipleUploads(files, itemId) { 
-    
-  var promises = [];
-  files.forEach(function (imgItem, index, array) {
-      if(index == 0){
-        promises.push(uploadToS3(imgItem, true));
-      }else{
-        promises.push(uploadToS3(imgItem, false));
-      }
-  });
-  Promise.all(promises).then((imageEntries) => {
-      addMediaEntry(imageEntries, itemId);
-  })
 }
 
 function uploadToS3(imgItem, isCoverImage) {
