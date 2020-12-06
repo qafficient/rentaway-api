@@ -18,7 +18,13 @@ const item = require("../model/item");
 router.get("/", (req, res, next) => {
 
   Item.find({}).exec().then( (doc) => {
-    console.log(doc);
+    res.status(200).json(doc);
+  })
+  .catch(error => {console.log(error)})
+});
+
+router.get("/:_id", (req, res, next) => {
+  Item.findById(req.params._id).exec().then( (doc) => {
     res.status(200).json(doc);
   })
   .catch(error => {console.log(error)})
