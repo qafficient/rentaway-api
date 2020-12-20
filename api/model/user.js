@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
   password: String,
   city: String,
   mobile: Number,
-  countrycode: {type: String, default: "=+91"}
+  countrycode: {type: String, default: "+91"}
 });
 
 module.exports = mongoose.model("User", userSchema);

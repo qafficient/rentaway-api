@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
 
 
-const Status = Object.freeze({
-    Active: 'active',
-    Rented: 'rented',
-    Removed: 'removed',
-  });
-
 const itemSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: String,
