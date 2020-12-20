@@ -5,6 +5,9 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const listItem = require("./api/route/listitem");
+const userservice = require("./api/route/userservice");
+const ErrorService = require('./api/error/errorservice');
+
 const uri =
   "mongodb+srv://" +
   process.env.RENT_AWAY_DB_UN +
@@ -36,6 +39,8 @@ app.use(function (req, res, next) {
 });
 
 app.use("/listitem", listItem);
+app.use("/user", userservice);
+app.use("/", ErrorService);
 
 
 module.exports = app;
