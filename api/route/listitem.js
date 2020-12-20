@@ -12,8 +12,6 @@ const storage = require("./fileloader");
 const upload = multer({ storage: storage }).array("itemImage");
 
 const Item = require("../model/item");
-const Media = require("../model/media");
-const item = require("../model/item");
 
 router.get("/", (req, res, next) => {
 
@@ -36,6 +34,7 @@ const s3 = new AWS.S3({
 });
 
 router.post("/", upload, (req, res, next) => {
+  console.log(req.body);
 
   var promises = [];
   req.files.forEach(function (imgItem, index, array) {
@@ -55,16 +54,20 @@ function newRentItemEntry(req, res, imageEntries){
   const item = new Item({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
-    price: req.body.price,
+    rentprice: JSON.parse(req.body.rentprice),
     description: req.body.description,
-    images: imageEntries
+    category: req.body.category,
+    userId: req.body.userId,
+    city: req.body.city,
+    images: imageEntries,
+    status: 'active'
   });
 
   item
     .save()
     .then((result) => {
       console.log(result);
-      res.status(200).json({
+      res.status(201).json({
         message: result,
       });
     })
@@ -102,6 +105,13 @@ function buildParam(imgItem, fileType) {
     Body: imgItem.buffer,
   };
   return params;
+}
+
+function buildRentPricce(rentPriceText){
+  console.log(rentPriceText);
+   var rentJsonArray = JSON.parse(rentPriceText);
+   console.log(rentJsonArray);
+   return rentJsonArray;
 }
 
 module.exports = router;
