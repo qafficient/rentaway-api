@@ -6,7 +6,7 @@ const itemSchema = mongoose.Schema({
     name: String,
     description: String,
     category: String,
-    rentprice: [{ price: Number, tenure: String }],
+    rentprice: [{ price: Number, unit:String, tenure: String }],
     userId: String,
     city: String,
     status: {type: String, default: 'active'},

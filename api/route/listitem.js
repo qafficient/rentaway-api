@@ -34,7 +34,8 @@ const s3 = new AWS.S3({
 });
 
 router.post("/", upload, (req, res, next) => {
-  console.log(req.body);
+  console.debug(req.body);
+  console.debug(req.files);
 
   var promises = [];
   req.files.forEach(function (imgItem, index, array) {
@@ -107,11 +108,5 @@ function buildParam(imgItem, fileType) {
   return params;
 }
 
-function buildRentPricce(rentPriceText){
-  console.log(rentPriceText);
-   var rentJsonArray = JSON.parse(rentPriceText);
-   console.log(rentJsonArray);
-   return rentJsonArray;
-}
 
 module.exports = router;
